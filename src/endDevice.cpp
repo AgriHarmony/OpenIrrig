@@ -12,8 +12,12 @@
 #define VALVE_D8 8 // electric valve
 
 #define SKIP_NUM 5 // skipping first 5 reading data due to sensor starting
-#define IRRIG_TIME_CNT 10
-#define STOP_IRRIG_TIME_CNT 50
+
+#define CNT_TIME_UNIT 60000 // unit in ms
+#define IRRIG_TIME_CNT 30
+#define STOP_IRRIG_TIME_CNT 30
+
+
 int readCnt = 0;
 int irrigEnableCnt = 0;
 int irrigDisableCnt = 0;
@@ -80,7 +84,7 @@ void simplePeriodicIrrig(){
       }
 
       readSensors(enableIrrig, irrigEnableCnt, irrigDisableCnt);
-      delay(5000);
+      delay(CNT_TIME_UNIT);
 
     }else{
         readCnt++;
@@ -103,7 +107,12 @@ void readSensors(bool enableIrrig, int irrigEnableCnt, int irrigDisableCnt)
     float v1 = analogRead(EC5_A1)*(3.3/1023.0);
     float v2 = analogRead(EC5_A2)*(3.3/1023.0);
     Serial.print("Status:");
-    Serial.print(enableIrrig);
+    if( enableIrrig == true ){
+        Serial.print("IRRI");
+    }else{
+        Serial.print("IDLE");
+    }
+
     Serial.print(",");
 
     Serial.print("EnableCnt:");
@@ -124,4 +133,5 @@ void readSensors(bool enableIrrig, int irrigEnableCnt, int irrigDisableCnt)
 
     Serial.print("ec5,a2,");
     Serial.println(v2);
+    // Serial.println();
   }

@@ -1,0 +1,4 @@
+#start_time: ../data/
+#end_time: 2016-10-23-03-38
+#purpose: collect data in dense soil
+#command: python piSide.py -t {} -s {} -p {} -m {}

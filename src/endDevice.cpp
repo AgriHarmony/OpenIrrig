@@ -6,13 +6,17 @@
  */
 #include "Arduino.h"
 #include "SoftwareSerial.h"
+
+// Decagon Sensor Value Setup
 #define EC5_A2 2  // 5cm depth
 #define EC5_A1 1  // 10cm depth
 #define EC5_A0 0  // 15cm depth
+
+// Actuactor Setup
 #define VALVE_D8 8 // electric valve
 
+// Read Sensor Behavior
 #define SKIP_NUM 5 // skipping first 5 reading data due to sensor starting
-
 #define CNT_TIME_UNIT 60000 // unit in ms
 #define IRRIG_TIME_CNT 30
 #define STOP_IRRIG_TIME_CNT 30
@@ -41,6 +45,10 @@ void slaveRead();
 /* arduino as a slave listen to the master cmd */
 // ===========================
 
+// ===========================
+void readCommandFromSerial();
+// ===========================
+
 void setup()
 {
   // Serial Start
@@ -53,17 +61,26 @@ void setup()
 
 void loop()
 {
+  // readCommandFromSerial();
   simplePeriodicIrrig();
 }
 
 //
 //  Function Implementation
 //
+
+void readCommandFromSerial(){
+  if( Serial.available() ){
+     String inBuffer = Serial.readString();
+     if (inBuffer != NULL) {
+       Serial.println(inBuffer);
+     }
+  }
+}
 void simplePeriodicIrrig(){
 
   if (readCnt > SKIP_NUM)
   {
-
       // irrigation over 10 mins
       if ( irrigEnableCnt == IRRIG_TIME_CNT ){
           enableIrrig = false;
@@ -98,40 +115,46 @@ void simplePeriodicIrrig(){
     }
 
 }
-
+/*
+*   void readSensors(bool, int, int)
+*   @Para:
+*   @Return:
+*/
 void readSensors(bool enableIrrig, int irrigEnableCnt, int irrigDisableCnt)
 {
-
-
     float v0 = analogRead(EC5_A0)*(3.3/1023.0);
     float v1 = analogRead(EC5_A1)*(3.3/1023.0);
     float v2 = analogRead(EC5_A2)*(3.3/1023.0);
-    Serial.print("Status:");
+
+    // This Part should be moved
+    // Serial.print("Status:");
     if( enableIrrig == true ){
         Serial.print("IRRI");
     }else{
         Serial.print("IDLE");
     }
-
     Serial.print(",");
 
-    Serial.print("EnableCnt:");
-    Serial.print(irrigEnableCnt);
-    Serial.print(",");
+    // Serial.print("EnableCnt:");
+    // Serial.print(irrigEnableCnt);
+    // Serial.print(",");
+    //
+    // Serial.print("DisableCnt:");
+    // Serial.print(irrigDisableCnt);
+    // Serial.print(",");
 
-    Serial.print("DisableCnt:");
-    Serial.print(irrigDisableCnt);
-    Serial.print(",");
-
-    Serial.print("ec5,a0,");
+    // A0 sensor
+    // Serial.print("ec5,a0,");
     Serial.print(v0);
     Serial.print(",");
 
-    Serial.print("ec5,a1,");
+    // A1 sensor
+    // Serial.print("ec5,a1,");
     Serial.print(v1);
     Serial.print(",");
 
-    Serial.print("ec5,a2,");
+    // A2 sensor
+    // Serial.print("ec5,a2,");
     Serial.println(v2);
     // Serial.println();
   }

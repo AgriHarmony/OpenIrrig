@@ -1,3 +1,4 @@
+import argparse
 import serial
 import time
 import datetime
@@ -6,80 +7,143 @@ import sys
 # Calibration function ( for 2500mV )
 def potting_calibration( mV ):
     return 2.11 * (10**-3) * mV - 0.675
-# Dielectric Permittivity ( for 2500mV )
+# Dielectric Permittivity ( for 2500mV ), unadoptable
 def dp( mV ):
     return 1/( -3.3326*10**-9 * mV**3 + 7.0218*10**-6 * mV**2 -\
     5.11647*10**-3 * mV + 1.30746 )
 
-def get_mV_index( AnalogId ):
-    if AnalogId >= 0 :
-        return (id+1)*3-1;
-    else:
-        return null;
+def get_datetimestamp( deltaMins ):
+    return time.time() + deltaMins * 60
+def get_datetime( deltaMins ):
+    return datetime.datetime.fromtimestamp( time.time() + deltaMins * 60 ).strftime('%Y-%m-%d-%H-%M')
+def get_time( deltaMins ):
+    return datetime.datetime.fromtimestamp( time.time() + deltaMins * 60 ).strftime('%H:%M')
+def get_today_date( ):
+    return datetime.datetime.fromtimestamp( time.time() ).strftime('%Y-%m-%d')
+# def display_serial():
+#     while True :
+#         time.sleep(1)
+#         t = time.time()
+#
+#         if endTimestamp - t > 0 :
+#             string = ser.readline()
+#             if string :
+#                 rawStr = string.rstrip()
+#                 # print rawStr
+#                 ws = '{},{}\n'.format( get_time(0), rawStr )
+#                 print ws
+#         else:
+#             exit()
 
+# def write_serial2file( fp ):
+#     while True :
+#         time.sleep(1)
+#         t = time.time()
+#
+#         if endTimestamp - t > 0 :
+#             string = ser.readline()
+#             if string :
+#                 rawStr = string.rstrip()
+#                 # print rawStr
+#                 ws = '{},{}\n'.format( get_time(0), rawStr )
+#                 print ws
+#                 fp.write(ws)
+#         else:
+#             exit()
 
-def get_timestamp( deltaHour = 0 ):
-    return time.time() + deltaHour * 3600;
+parser = argparse.ArgumentParser(description='a command line tool for collect arduino data')
+parser.add_argument('-t', action='store', type=int, \
+    help='set the execute time (unit is min) for scrip, default=5mins', default=5, dest='time')
+parser.add_argument('-s', '--save', action='store_true', \
+    help='save the collect data to a .csv with current datetime as filename, -s(true),default(false),')
+parser.add_argument('-p', action='store', type=str, \
+    help='set the default output file path. Default=../data/', default='../data/', dest='path')
+parser.add_argument('-m', '--msg', action='store', \
+    help='Ask user to input a short message of experimental purpose (it will store in output file)', required=True)
 
-def get_datetme( ts ):
-    return datetime.datetime.fromtimestamp(ts).strftime('%Y-%m-%d_%H_%M_%S')
+args = parser.parse_args()
 
 """
 Configuration
 """
-executeHour = 5 # time of the script to execute
-startTime = get_datetme( get_timestamp(0) )
-endTimestamp = get_timestamp( executeHour )
-endTime = get_datetme( endTimestamp )
 
+# Serial
 devPath = '/dev/ttyACM0'
 
 # Variales initialize
-i = 0
 rawStr = ''
 
+# Header
+HEADER = ('time', 'status', 'EC5_A0', 'EC5_A1', 'EC5_A2', '\n')
+
+# End Time
+endTimeStr = get_datetime(args.time)
+endTimestamp = get_datetimestamp(args.time)
+
+# Serial initialize
+ser = serial.Serial(devPath, 9600, timeout=None)
+
 if __name__ == "__main__":
+    print args.time
+    print args.save
+    print args.path
+    print args.msg
 
-    print "now:"
-    print startTime
-    print get_timestamp()
-    print "\nstop at:"
-    print endTime
-    print endTimestamp
-
-    # Serial initialize
-    ser = serial.Serial(devPath, 9600, timeout=None)
-
-    if sys.argv[1] != '--test':
-        # File open initialize
-        dataDir = "./data/{}.csv".format( startTime )
-        fp = open(dataDir, "w+")
-        fp.write( "#start_time: {}\n".format(startTime) )
-        fp.write( "#end_time: {}\n".format(endTime) )
+    # CLI prompt for start script information
+    print '-- data collecting script --'
+    print 'Start @ {}'.format( get_datetime(0) )
+    print 'End @ {}'.format( get_datetime(args.time) )
 
     try:
-        while True :
-            t = time.time()
+        if args.save :
+            # Write Meta Data
+            dataDir = "{}{}.csv".format( args.path ,get_datetime(0) )
+            fp = open(dataDir, "w+")
+            fp.write( "#start_time: {}\n".format( args.path, get_datetime(0)) )
+            fp.write( "#end_time: {}\n".format(endTimeStr) )
+            fp.write( "#purpose: {}\n".format( args.msg ) )
+            fp.write( "#command: python piSide.py -t {} -s {} -p {} -m {}\n".\
+                format(args.time, args.save, args.path, args.msg))
 
-            if endTimestamp - t > 0 :
+            # Write Data Column Header
+            h = ",".join(HEADER)
+            print h
+            fp.write('#{}'.format(h))
+            # listen to serial from ardiuno then write data to file
+            # write_serial2file(fp)
+            while True :
+                time.sleep(1)
+                t = time.time()
 
-                string = ser.readline()
-                if string :
-                    rawStr = string.rstrip()
-                    strList = rawStr.split(',')
+                if endTimestamp - t > 0 :
+                    string = ser.readline()
+                    if string :
+                        rawStr = string.rstrip()
+                        # print rawStr
+                        ws = '{},{}\n'.format( get_time(0), rawStr )
+                        print ws
+                        fp.write(ws)
+                else:
+                    exit()
 
-                    print '--------- {}, cnt: {} ---------'.format( get_datetme( get_timestamp(0) ), i )
-                    print rawStr
-                    i+=1
-                    if sys.argv[1] != '--test':
-                        fp.write("{}\n".format(rawStr))
+            fp.close()
 
+        else:
 
+            # only print the serial from ardiuno
+            while True :
+                time.sleep(1)
+                t = time.time()
 
-                # print round(endTimestamp - t)
-
+                if endTimestamp - t > 0 :
+                    string = ser.readline()
+                    if string :
+                        rawStr = string.rstrip()
+                        # print rawStr
+                        ws = '{},{}\n'.format( get_time(0), rawStr )
+                        print ws
+                else:
+                    exit()
 
     except Exception as e:
         raise
-    if sys.argv[1] != '--test':
-        fp.close()

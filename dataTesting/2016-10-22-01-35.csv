@@ -1,0 +1,23 @@
+#start_time: ../dataTesting/
+#end_time: 2016-10-22-01-36
+#purpose: testing3
+#time,status,EC5_A0,EC5_A1,EC5_A2,
+01:35,IRIn Skip mode: SKIP_NUM: 5,readCnt: 1
+01:35,In Skip mode: SKIP_NUM: 5,readCnt: 2
+01:35,In Skip mode: SKIP_NUM: 5,readCnt: 3
+01:35,In Skip mode: SKIP_NUM: 5,readCnt: 4
+01:35,In Skip mode: SKIP_NUM: 5,readCnt: 5
+01:35,In Skip mode: SKIP_NUM: 5,readCnt: 6
+01:35,IRRI,0.35,0.74,0.86
+01:35,IRRI,0.39,0.78,0.86
+01:35,IRRI,0.37,0.69,0.76
+01:35,IRRI,0.36,0.71,0.78
+01:35,IRRI,0.35,0.78,0.86
+01:35,IRRI,0.39,0.75,0.82
+01:35,IRRI,0.36,0.70,0.76
+01:35,IRRI,0.37,0.67,0.74
+01:35,IRRI,0.35,0.71,0.77
+01:35,IRRI,0.38,0.77,0.84
+01:35,IRRI,0.37,0.73,0.80
+01:36,IRRI,0.35,0.67,0.74
+01:36,IRRI,0.35,0.73,0.79

@@ -76,7 +76,8 @@ rawStr = ''
 # Header
 HEADER = ('time', 'status', 'EC5_A0', 'EC5_A1', 'EC5_A2', '\n')
 
-# End Time
+# Start & End Time
+starTimeStr = get_datetime(0)
 endTimeStr = get_datetime(args.time)
 endTimestamp = get_datetimestamp(args.time)
 
@@ -99,7 +100,7 @@ if __name__ == "__main__":
             # Write Meta Data
             dataDir = "{}{}.csv".format( args.path ,get_datetime(0) )
             fp = open(dataDir, "w+")
-            fp.write( "#start_time: {}\n".format( args.path, get_datetime(0)) )
+            fp.write( "#start_time: {}\n".format( starTimeStr, get_datetime(0)) )
             fp.write( "#end_time: {}\n".format(endTimeStr) )
             fp.write( "#purpose: {}\n".format( args.msg ) )
             fp.write( "#command: python piSide.py -t {} -s {} -p {} -m {}\n".\

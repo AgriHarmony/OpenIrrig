@@ -20,7 +20,7 @@
 #define CNT_TIME_UNIT 60000 // unit in ms
 #define IRRIG_TIME_CNT 30
 #define STOP_IRRIG_TIME_CNT 30
-
+#define PURE_MONITOR_CNT 60 // Unit is CNT_TIME_UNIT
 
 int readCnt = 0;
 int irrigEnableCnt = 0;
@@ -79,15 +79,14 @@ void readCommandFromSerial(){
 }
 void simplePeriodicIrrig(){
 
-  if (readCnt > SKIP_NUM)
+  if (readCnt > SKIP_NUM + PURE_MONITOR_CNT )
   {
-      // irrigation over 10 mins
-      if ( irrigEnableCnt == IRRIG_TIME_CNT ){
+      if ( irrigEnableCnt >= IRRIG_TIME_CNT ){
           enableIrrig = false;
           irrigEnableCnt = 0;
       }
       // Stop irrigation over 50 mins
-      if ( irrigDisableCnt == STOP_IRRIG_TIME_CNT ){
+      if ( irrigDisableCnt >= STOP_IRRIG_TIME_CNT ){
           enableIrrig = true;
           irrigDisableCnt = 0;
       }
@@ -95,25 +94,43 @@ void simplePeriodicIrrig(){
       if ( enableIrrig ){
         digitalWrite(VALVE_D8, HIGH);
         irrigEnableCnt += 1;
+
+
       }else{
         digitalWrite(VALVE_D8, LOW);
         irrigDisableCnt += 1;
-      }
 
-      readSensors(enableIrrig, irrigEnableCnt, irrigDisableCnt);
-      delay(CNT_TIME_UNIT);
+      }
+      Serial.print(irrigEnableCnt);
+      Serial.print(",");
+      Serial.print(irrigDisableCnt);
+      Serial.print(",");
+      // This Part should be moved
+      // Serial.print("Status:");
+      if( enableIrrig == true ){
+          Serial.print("IRRI");
+      }else{
+          Serial.print("IDLE");
+      }
+      // Serial.print("MONI");
+      Serial.print(",");
 
     }else{
-        readCnt++;
+      if ( readCnt < SKIP_NUM ){
         Serial.print("In Skip mode: ");
         Serial.print("SKIP_NUM: ");
         Serial.print(SKIP_NUM);
         Serial.print(",");
         Serial.print("readCnt: ");
         Serial.println(readCnt);
-
+      } else {
+        Serial.print("MONI");
+      }
+      Serial.print(",");
     }
-
+    readCnt++;
+    readSensors(enableIrrig, irrigEnableCnt, irrigDisableCnt);
+    delay(CNT_TIME_UNIT);
 }
 /*
 *   void readSensors(bool, int, int)
@@ -126,14 +143,7 @@ void readSensors(bool enableIrrig, int irrigEnableCnt, int irrigDisableCnt)
     float v1 = analogRead(EC5_A1)*(3.3/1023.0);
     float v2 = analogRead(EC5_A2)*(3.3/1023.0);
 
-    // This Part should be moved
-    // Serial.print("Status:");
-    if( enableIrrig == true ){
-        Serial.print("IRRI");
-    }else{
-        Serial.print("IDLE");
-    }
-    Serial.print(",");
+
 
     // Serial.print("EnableCnt:");
     // Serial.print(irrigEnableCnt);

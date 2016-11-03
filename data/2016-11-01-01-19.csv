@@ -1,0 +1,5 @@
+#start_time: 2016-11-01-01-19
+#end_time: 2016-11-01-11-19
+#purpose: small bottle with 3 depth sensor,a0:shallow
+#command: python piSide.py -t 600 -s True -p ../data/ -m small bottle with 3 depth sensor,a0:shallow
+#time,status,EC5_A0,EC5_A1,EC5_A2,

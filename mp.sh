@@ -1,1 +1,1 @@
-pio -f -c atom serialports monitor --port /dev/ttyACM0
+pio -f -c atom serialports monitor --port /dev/ttyACM2

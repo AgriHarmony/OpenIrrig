@@ -10,6 +10,7 @@ struct Global global;
 
 void setup() {
     UNITY_BEGIN();    // IMPORTANT LINE!
+    Serial.begin(57600);
     while(!Serial){
         ;
     }
@@ -29,15 +30,21 @@ void setup() {
 
 }
 
-void test_readCommandFromSerial(void){
-    mySerial.println("TRAN,slave,master,usb");
-    TEST_ASSERT_EQUAL(readCommandFromSerial(global.recevieContent, global.tempChar),
-     "TRAN,slave,master,usb");
-
-}
+// void test_readCommandFromSerial(void){
+//     mySerial.println("TRAN,slave,master,usb");
+//     TEST_ASSERT_EQUAL_STRING(readCommandFromSerial(global.recevieContent, global.tempChar),
+//      "TRAN,slave,master,usb");
+//
+// }
 void loop() {
+    String s1 = "123";
+    const char* s2 = "123";
+    Serial.print("s1: ");
+    Serial.print(typeof(s1));
+    Serial.print("s2: ");
+    Serial.print(typeof(s2));
 
-    RUN_TEST(test_readCommandFromSerial(void));
+    // RUN_TEST(test_readCommandFromSerial);
     delay(500);
     UNITY_END(); // stop unit testing
 

@@ -49,7 +49,7 @@ int extractPara(String cmd, int speIdx[10], int paraNum, int ParaId){
 
     Serial.print("paraStr: ");
     Serial.println(paraStr);
-    Serial.print("cmd.length()")
+    Serial.print("cmd.length()");
     Serial.print(cmd.length());
     Serial.print(" ,start: ");
     Serial.print(speIdx[idx]+1);

@@ -21,6 +21,7 @@ void setup()
   global.enableIrrig = false;
   // global.tempChar = '';
   global.recevieContent = "";
+  global.sensorReadValue = -1;
 }
 
 void loop()

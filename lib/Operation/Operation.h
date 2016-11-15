@@ -22,9 +22,14 @@
 #define PURE_MONITOR_CNT 60 // Unit is CNT_TIME_UNIT
 
 #define SEPERATOR_ARRAY_SIZE 10;
+
+// Commands definition
+
 const char SEPERATOR = ',';
-
-
+#define OPCODE_START 0
+#define OPCODE_END 4
+#define SENS_COMMAND_READ_PARAID 1
+#define SENS_COMMAND_ACTUATOR_PARAID 1
 //
 // Function Declaration
 //
@@ -44,8 +49,10 @@ void decode( String cmd );
 //
 
 void cleanRecevieContent( String recevieContent );
-int extractPara(String cmd, int speIdx[10],int paraNum, int ParaId);
-int getNonNegetiveCount( int sepIdx[10] );
-int* findSepIdxs(int* sepIdx, String cmd);
-
+int extractPara(String cmd, int speIdxs[10],int paraNum, int ParaId);
+int getNonNegetiveCount( int sepIdxs[10] );
+int* findSepIdxs(int* sepIdxs, String cmd);
+bool isParaIdValid( int paraNum, int paraId );
+void execute_SENS( String cmd, int speIdxs[10],int paraNum );
+void execute_IRRI( String cmd, int speIdxs[10],int paraNum );
 #endif // OPERATION_H_

@@ -9,5 +9,6 @@ struct Global{
   bool enableIrrig;
   char tempChar;
   String recevieContent;
+  float sensorReadValue;
 };
 #endif

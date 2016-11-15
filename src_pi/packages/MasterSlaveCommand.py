@@ -33,8 +33,11 @@ class MasterSlaveCommand:
     def get_CMD_TRAN(self, source, dest, method):
         return "TRAN,{},{},{}".format(source, dest, method)
 
-    def get_CMD_IRRI(self, actucatorPin, executingTime, restTime):
-        return "IRRI,{},{},{}".format(actucatorPin, executingTime, restTime)
+    def get_CMD_IRRI(self, actuatorPin, executingTime, restTime):
+        return "IRRI,{},{},{}".format(actuatorPin, executingTime, restTime)
 
     def get_CMD_SENS(self, sensorPin):
         return "SENS,{}".format(sensorPin)
+
+    def get_CMD_DWRI(self, actuatorPin):
+        return "DWRI,{}".format(actuatorPin)

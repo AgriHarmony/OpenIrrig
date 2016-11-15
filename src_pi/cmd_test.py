@@ -4,11 +4,12 @@ import datetime
 from packages.MasterSlaveCommand import MasterSlaveCommand
 
 # Port
+macLeftUSB = '/dev/cu.usbmodem1421'
 production = '/dev/ttyACM0'
 test = '/dev/ttyACM2'
 
 # Serial
-devPath = test
+devPath = macLeftUSB
 
 
 # Serial initialize
@@ -39,7 +40,8 @@ if __name__ == "__main__":
 
             tran = commands.get_CMD_TRAN('slave','master','usb')
             sens = commands.get_CMD_SENS(1)
-            irri = commands.get_CMD_IRRI(1,60,30)
+
+            irri = commands.get_CMD_IRRI(1,1,2)
 
             ser.write(b"{}\n".format(tran))
             print tran

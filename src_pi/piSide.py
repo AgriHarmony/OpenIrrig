@@ -1,6 +1,7 @@
 import argparse
 import serial
 import time
+from threading import Timer
 import datetime
 import sys
 
@@ -68,7 +69,12 @@ Configuration
 """
 
 # Serial
-devPath = '/dev/ttyACM0'
+# Mac /dev/cu.usbmodem1421
+macLeftUSB = '/dev/cu.usbmodem1421'
+production = '/dev/ttyACM0'
+test = '/dev/ttyACM2'
+
+devPath = macLeftUSB
 
 # Variales initialize
 rawStr = ''
@@ -83,6 +89,9 @@ endTimestamp = get_datetimestamp(args.time)
 
 # Serial initialize
 ser = serial.Serial(devPath, 9600, timeout=None)
+
+# Commands
+commands = MasterSlaveCommand()
 
 if __name__ == "__main__":
     print args.time
@@ -137,11 +146,18 @@ if __name__ == "__main__":
                 t = time.time()
 
                 if endTimestamp - t > 0 :
+
+                    # Write Commands to Ardiuno
+                    # ser.write(b"{}\n".format(commands.get_CMD_SENS(0)))
+                    # ser.write(b"{}\n".format(commands.get_CMD_SENS(1)))
+                    # ser.write(b"{}\n".format(commands.get_CMD_SENS(2)))
+
+                    # Receive Response from Ardiuno
                     string = ser.readline()
                     if string :
                         rawStr = string.rstrip()
                         # print rawStr
-                        ws = '{},{}\n'.format( get_time(0), rawStr )
+                        ws = '${},{}\n'.format( get_time(0), rawStr )
                         print ws
                 else:
                     exit()

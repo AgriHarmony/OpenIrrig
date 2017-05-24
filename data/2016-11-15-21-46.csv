@@ -1,0 +1,16 @@
+#start_time: 2016-11-15-21-46
+#end_time: 2016-11-15-21-56
+#purpose: pure sense without irrigation
+#command: python piSide.py -t 10 -s True -p ../data/ -m pure sense without irrigation
+#time,status,EC5_A0,EC5_A1,EC5_A2,
+21:46,SENS,0.31,0.37,0.35
+21:47,SENS,0.30,0.35,0.35
+21:48,SENS,0.31,0.40,0.34
+21:49,SENS,0.30,0.40,0.36
+21:50,SENS,0.31,0.36,0.34
+21:51,SENS,0.32,0.34,0.35
+21:52,SENS,0.32,0.34,0.39
+21:53,SENS,0.32,0.34,0.37
+21:54,SENS,0.31,0.34,0.36
+21:55,SENS,0.35,0.35,0.37
+21:56,SENS,0.36,0.35,0.34

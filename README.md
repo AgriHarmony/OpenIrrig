@@ -1,6 +1,6 @@
 # OpenIrri 
 
-a open source simple tool for conduct irrigation experiment with sensors base on Rasp Pi and Arduino
+a open source simple event-driven monitoring tool for conduct irrigation experiment with sensors base on Rasp Pi and Arduino
 
 # Usage
 1. Upload arduino firmware "sh ul.sh". 
